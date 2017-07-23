@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class UserDate {
 
-    static void getDate() {
+    static int[] getDate() {   //will clean it later
         Scanner sc = new Scanner ( System.in );
         System.out.print ( "Enter the month: " );
         String month = sc.next ();
@@ -18,7 +18,7 @@ public class UserDate {
                     month = sc.next ();
                 } else {
                     m = Integer.parseInt ( month );
-                    if (m > 11 || m < 0) {
+                    if (m > 12 || m < 1) {
                         {
                             System.out.print ( "Incorrect month number.Please enter the correct one(from 0 to 11): " );
                             month = sc.next ();
@@ -26,7 +26,7 @@ public class UserDate {
                     }
                 }
             }
-            while (m > 11 || m < 0);
+            while (m > 12 || m < 1);
         } while ((!isInteger ( month )));
 
 
@@ -55,7 +55,7 @@ public class UserDate {
         String year = sc.next ();
         do {
             do {
-                if (!isInteger (year )) {
+                if (!isInteger ( year )) {
                     System.out.println ( "Please enter a number." );
                     year = sc.next ();
                 } else {
@@ -68,9 +68,12 @@ public class UserDate {
                     }
                 }
             }
-            while (m > 3017 || m < 1);
+            while (y > 3017 || y < 1);
         } while ((!isInteger ( month )));
-        System.out.println ("Your date is " +  formatMonth (m, Locale.ENGLISH)  + " " + d + " " + y );
+        m -= 1;
+        System.out.println ( "Your date is " + formatMonth ( m, Locale.ENGLISH ) + " " + d + " " + y );
+        int[] date = {m, d, y};
+        return (date);
     }
 
     static boolean isInteger(String s) {
@@ -81,6 +84,7 @@ public class UserDate {
         }
         return true;
     }
+
     public static String formatMonth(int month, Locale locale) {
         DateFormatSymbols symbols = new DateFormatSymbols ( locale );
         String[] monthNames = symbols.getMonths ();
