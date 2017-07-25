@@ -1,6 +1,5 @@
-import java.text.DateFormatSymbols;
+import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Locale;
 
 /**
  * The user inputs a year and the program outputs dates of Friday the 13th in given year
@@ -8,41 +7,49 @@ import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
+        SimpleDateFormat sdf = new SimpleDateFormat ( "MMM dd yyyy" );
+        System.out.println ( "Please input the start date.(mm/dd/yyyy)" );
 
-            System.out.print ( "Enter the year: " );
-            Scanner sc = new Scanner ( System.in );
-            String s = sc.next ();
-            do {
-                if (!isInteger ( s )) {
-                    System.out.println ("Please enter a number.");
-                    s = sc.next ();
-                }
-            } while ((!isInteger ( s )));
+        UserDate startYear = new UserDate ();
+        int[] year1 = startYear.getDate ();
 
-        int year = Integer.parseInt (s);
-        Calendar cal = new GregorianCalendar ( year, 0, 13 );
-        for (int i = 0; i < 12; i++) {
-            int check = cal.get ( Calendar.DAY_OF_WEEK );
-            if (check == 6) {
-                int tem = cal.get ( Calendar.MONTH );
-                System.out.print ( formatMonth ( tem, Locale.ENGLISH ) + "\t" );
-                System.out.println ( cal.get ( Calendar.DAY_OF_MONTH ) );
+
+        System.out.println ( "Please input the end date.(mm/dd/yyyy)" );
+        UserDate endYear = new UserDate ();
+        int[] year2 = endYear.getDate ();
+        System.out.println ( "Here's the list of dates of all Fridays 13th between your two dates: " );
+
+        Calendar cal = new GregorianCalendar ( year2[2], year2[0], year2[1] );
+        Calendar cal2 = new GregorianCalendar ( year1[2], year1[0], year1[1] );
+        Calendar cs; //calendar start
+        Calendar ce; //calendar end
+
+        if (cal.compareTo ( cal2 ) != 1) {
+            cs = cal;
+            ce = cal2;
+        } else {  //If date2 < year 1, dates change the places;
+            cs = cal2;
+            ce = cal;
+
+        }
+        if (cs.get ( Calendar.DAY_OF_MONTH ) > 13)   //going to next month if day is > 13, else just changing the date
+        {
+            cs.add ( Calendar.MONTH, 1 );
+            if (cs.get ( Calendar.MONTH ) > 11) {
+                cs.set ( Calendar.MONTH, 0 );
+                cs.add ( Calendar.YEAR, 1 );
             }
-            cal.add ( Calendar.MONTH, 1 );
         }
-    }
-
-    public static String formatMonth(int month, Locale locale) {
-        DateFormatSymbols symbols = new DateFormatSymbols ( locale );
-        String[] monthNames = symbols.getMonths ();
-        return monthNames[month];
-    }
-    static boolean isInteger(String s) {
-        try {
-            Integer.parseInt(s);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
+        cs.set ( Calendar.DAY_OF_MONTH, 13 ); // setting 13th
+        do {
+            if (cs.get ( Calendar.DAY_OF_WEEK ) == 6) {
+                System.out.println ( sdf.format ( cs.getTime () ) );
+            }
+            cs.add ( Calendar.MONTH, 1 );
+            if (cs.get ( Calendar.MONTH ) > 11) {
+                cs.set ( Calendar.MONTH, 0 );
+                cs.add ( Calendar.YEAR, 1 );
+            }
+        } while (cs.compareTo ( ce ) != 1);
     }
 }
